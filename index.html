@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qazaqstan — Minecraft SMP Сервері</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kzSky: '#00D2FF',
+                        kzGold: '#FFC700',
+                        darkBg: '#080C14',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #060911;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 85% 60%, rgba(255, 199, 0, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+        .glass-panel {
+            background: rgba(13, 19, 33, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(18, 26, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 210, 255, 0.35);
+            box-shadow: 0 15px 30px -10px rgba(0, 210, 255, 0.15);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF5C0 0%, #FFC700 50%, #D49B00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sky-gradient-text {
+            background: linear-gradient(135deg, #A8F1FF 0%, #00D2FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Sidebar transition */
+        #sidebar {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-kzSky selection:text-black">
+
+    <!-- Header Navigation with Hamburger Menu -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-kzSky/20 via-cyan-500/10 to-kzGold/20 border border-kzSky/40 flex items-center justify-center shadow-lg group-hover:border-kzGold/60 transition-all">
+                    <svg class="w-6 h-6 text-kzSky group-hover:text-kzGold transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider uppercase gold-gradient-text block leading-none">QAZAQSTAN</span>
+                    <span class="text-[10px] text-kzSky font-bold tracking-widest uppercase">Minecraft SMP Server</span>
+                </div>
+            </a>
+
+            <!-- Hamburger Button (3 lines) on Top Right -->
+            <button onclick="toggleSidebar()" aria-label="Мәзірді ашу" class="w-12 h-12 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white border border-white/10 flex items-center justify-center text-xl transition-all shadow-lg active:scale-95">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar Overlay & Drawer -->
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity opacity-0"></div>
+    <div id="sidebar" class="fixed top-0 right-0 h-full w-80 glass-panel z-50 shadow-2xl flex flex-col justify-between p-6 transform translate-x-full border-l border-white/10">
+        <div>
+            <!-- Sidebar Header -->
+            <div class="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg bg-kzSky/20 border border-kzSky/40 flex items-center justify-center text-kzSky">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <span class="font-extrabold text-white text-lg tracking-wider">МӘЗІР</span>
+                </div>
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-400 hover:text-white flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Links -->
+            <nav class="space-y-2">
+                <a href="#about" onclick="toggleSidebar()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800/80 text-gray-300 hover:text-kzSky font-semibold text-sm transition-all">
+                    <i class="fa-solid fa-house text-kzSky w-5"></i> Басты бет
+                </a>
+                <a href="#ipsection" onclick="toggleSidebar()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800/80 text-gray-300 hover:text-kzGold font-semibold text-sm transition-all">
+                    <i class="fa-solid fa-server text-kzGold w-5"></i> Айпи порт
+                </a>
+                <a href="#store" onclick="toggleSidebar()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800/80 text-gray-300 hover:text-kzSky font-semibold text-sm transition-all">
+                    <i class="fa-solid fa-gem text-kzSky w-5"></i> Донаттар
+                </a>
+                <a href="#cases" onclick="toggleSidebar()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800/80 text-gray-300 hover:text-kzGold font-semibold text-sm transition-all">
+                    <i class="fa-solid fa-box-open text-kzGold w-5"></i> Кейстер
+                </a>
+                <a href="#rules" onclick="toggleSidebar()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800/80 text-gray-300 hover:text-kzSky font-semibold text-sm transition-all">
+                    <i class="fa-solid fa-scroll text-kzSky w-5"></i> Ережелер
+                </a>
+            </nav>
+        </div>
+
+        <!-- Very bottom of sidebar: Қолдау button opening Telegram @Itz_Zix -->
+        <div class="pt-6 border-t border-white/10">
+            <a href="https://t.me/Itz_Zix" target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-kzSky to-cyan-500 hover:from-cyan-400 hover:to-kzSky text-slate-950 font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95">
+                <i class="fa-brands fa-telegram text-lg"></i> Қолдау (@Itz_Zix)
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="about" class="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <div class="flex justify-center mb-6">
+                <div class="w-24 h-24 rounded-3xl bg-slate-900 border-2 border-kzSky/40 flex flex-col items-center justify-center shadow-2xl animate-bounce">
+                    <i class="fa-solid fa-cube text-5xl sky-gradient-text"></i>
+                </div>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-4">
+                Қош келдіңіз, <span class="gold-gradient-text">Qazaqstan</span> Серверіне!
+            </h1>
+            <p class="max-w-2xl mx-auto text-base sm:text-lg text-gray-400 mb-10 leading-relaxed font-medium">
+                Үздік survival SMP тәжірибесі, достық атмосфера және тұрақты сервер! Ойынға қосылып, өз империяңды құр.
+            </p>
+
+            <!-- Server IP Copy Cards -->
+            <div id="ipsection" class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto scroll-mt-28">
+                <!-- Java IP -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between border-l-4 border-l-kzSky shadow-xl">
+                    <div class="text-left">
+                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-kzSky">
+                            <i class="fa-brands fa-java text-base"></i> Java Edition IP
+                        </div>
+                        <div class="font-mono text-lg font-extrabold text-white mt-1 tracking-wide">qazaqstan.mcmc.kz</div>
+                    </div>
+                    <button onclick="copyToClipboard('qazaqstan.mcmc.kz', 'Java IP көшірілді!')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gray-200 hover:text-white font-semibold text-xs transition-all flex items-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-regular fa-copy"></i> Көшіру
+                    </button>
+                </div>
+
+                <!-- Bedrock IP -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between border-l-4 border-l-kzGold shadow-xl">
+                    <div class="text-left">
+                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-kzGold">
+                            <i class="fa-solid fa-mobile-screen text-base"></i> Bedrock Edition
+                        </div>
+                        <div class="font-mono text-base font-extrabold text-white mt-0.5 tracking-wide">qazaqstan.mcmc.kz</div>
+                        <div class="text-xs text-gray-400 font-mono">Port: <span class="text-kzGold font-bold">55252</span></div>
+                    </div>
+                    <button onclick="copyToClipboard('qazaqstan.mcmc.kz:55252', 'Bedrock IP мен Порт көшірілді!')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gray-200 hover:text-white font-semibold text-xs transition-all flex items-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-regular fa-copy"></i> Көшіру
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Section / Донат Бағалары -->
+    <section id="store" class="py-16 bg-slate-950/60 relative scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-xs font-bold tracking-widest text-kzGold uppercase px-3.5 py-1.5 rounded-full bg-kzGold/10 border border-kzGold/20">Серверді қолдау</span>
+                <h2 class="text-3xl sm:text-5xl font-black text-white mt-3">
+                    Донат Мәртебелері <span class="text-gray-400 text-lg font-normal">(1 ай)</span>
+                </h2>
+                <p class="text-gray-400 text-sm mt-2">Сервердің дамуына үлес қосып, ерекше мүмкіндіктерге ие болыңыз</p>
+            </div>
+
+            <!-- Ranks Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <!-- Zhasaq -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-kzSky/10 border border-kzSky/30 flex items-center justify-center text-kzSky mb-4">
+                            <i class="fa-solid fa-shield-halved text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Zhasaq</h3>
+                        <p class="text-xs text-gray-400 mb-4">Бастапқы привилегия</p>
+                        <div class="text-2xl font-black text-kzSky mb-6">150 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Zhasaq', '150₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-kzSky hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Mergen -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
+                            <i class="fa-solid fa-crosshairs text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Mergen</h3>
+                        <p class="text-xs text-gray-400 mb-4">Өткір көзді мерген</p>
+                        <div class="text-2xl font-black text-cyan-400 mb-6">350 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Mergen', '350₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-cyan-400 hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Batyr -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4">
+                            <i class="fa-solid fa-hand-fist text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Batyr</h3>
+                        <p class="text-xs text-gray-400 mb-4">Батырлар артықшылығы</p>
+                        <div class="text-2xl font-black text-amber-400 mb-6">700 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Batyr', '700₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Bi -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+                            <i class="fa-solid fa-gavel text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Bi</h3>
+                        <p class="text-xs text-gray-400 mb-4">Әділ әрі құрметті мәртебе</p>
+                        <div class="text-2xl font-black text-purple-400 mb-6">1 200 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Bi', '1 200₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-purple-400 hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Sultan -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border-kzGold/30">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-kzGold/10 border border-kzGold/30 flex items-center justify-center text-kzGold mb-4">
+                            <i class="fa-solid fa-crown text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Sultan</h3>
+                        <p class="text-xs text-gray-400 mb-4">Үлкен билік пен киттер</p>
+                        <div class="text-2xl font-black text-kzGold mb-6">2 000 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Sultan', '2 000₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-kzGold hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Kharman -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+                            <i class="fa-solid fa-dragon text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">Kharman</h3>
+                        <p class="text-xs text-gray-400 mb-4">Жоғары деңгейлі мүмкіндік</p>
+                        <div class="text-2xl font-black text-emerald-400 mb-6">5 500 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                    </div>
+                    <button onclick="openPurchaseModal('Kharman', '5 500₸')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-emerald-400 hover:text-slate-950 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-95 shadow">
+                        <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                    </button>
+                </div>
+
+                <!-- Tanir -->
+                <div class="glass-card sm:col-span-2 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between border-2 border-kzGold/40 bg-gradient-to-r from-slate-900/90 to-amber-950/30">
+                    <div class="mb-4 sm:mb-0 text-center sm:text-left">
+                        <span class="text-[10px] font-black uppercase tracking-widest bg-kzGold text-slate-950 px-2.5 py-1 rounded-md mb-2 inline-block">MAX LEVEL</span>
+                        <div class="flex items-center gap-3 justify-center sm:justify-start">
+                            <div class="w-12 h-12 rounded-xl bg-kzGold/20 border border-kzGold/50 flex items-center justify-center text-kzGold">
+                                <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black gold-gradient-text">Tanir</h3>
+                                <p class="text-xs text-gray-300">Сервердегі ең жоғарғы мәртебе!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-right w-full sm:w-auto">
+                        <div class="text-3xl font-black text-kzGold mb-3">8 900 ₸ <span class="text-xs text-gray-400 font-normal">/ ай</span></div>
+                        <button onclick="openPurchaseModal('Tanir', '8 900₸')" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-kzGold to-amber-500 hover:from-amber-400 hover:to-kzGold text-slate-950 font-black text-sm transition-all shadow-lg active:scale-95">
+                            <i class="fa-solid fa-cart-plus"></i> Сатып алу
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cases Section / Кейстар -->
+            <div id="cases" class="scroll-mt-24">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold text-white flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-box-open text-kzGold"></i> Сервер Кейстері
+                    </h3>
+                    <p class="text-gray-400 text-sm">Бағыңды сынап, бағалы заттар мен рангтарды ұтып ал</p>
+                </div>
+
+                <div class="max-w-md mx-auto">
+                    <div class="glass-card rounded-2xl p-6 text-center border border-kzGold/30">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-kzGold/10 border border-kzGold/40 flex items-center justify-center text-kzGold">
+                            <i class="fa-solid fa-cube text-4xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">1 Кейс</h4>
+                        <p class="text-xs text-gray-400 mt-1 mb-4">Кез келген донат немесе зат түсуі мүмкін</p>
+                        <div class="text-3xl font-black gold-gradient-text mb-6">450 ₸</div>
+                        <button onclick="openPurchaseModal('1 Кейс', '450₸')" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-kzGold to-amber-500 hover:from-amber-400 hover:to-kzGold text-slate-950 font-bold text-sm transition-all shadow-lg active:scale-95">
+                            <i class="fa-solid fa-cart-plus"></i> Кейсті сатып алу
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SMP Rules Section / Сервер ережелері (7-8 rules) -->
+    <section id="rules" class="py-16 relative scroll-mt-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-xs font-bold tracking-widest text-kzSky uppercase px-3.5 py-1.5 rounded-full bg-kzSky/10 border border-kzSky/20">Тәртіп пен Әділдік</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-gavel text-kzGold"></i> SMP Сервер Ережелері
+                </h2>
+                <p class="text-gray-400 text-sm mt-2">Серверде жайлы әрі қауіпсіз ойын ойнау үшін ережелерді сақтаңыз</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">1</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Гриферлікке тыйым салынады</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Біреудің мүлкін немесе үйін рұқсатсыз бұзуға және тонауға болмайды.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">2</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Читерлік софттар мен боттар</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">X-ray, Fly, KillAura сияқты әділ емес бағдарламаларды қолдану банға әкеледі.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">3</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Чат мәдениеті</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Чатта балағат сөздер айтуға, ойыншыларды қорлауға қатаң тыйым салынады.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">4</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Дюп пен Багтарды қолданбау</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Заттарды заңсыз көбейту (дюп) немесе багтарды пайдалану қатаң жазаланады.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">5</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Спам және Жарнама</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Басқа серверлерді немесе үшінші тарап сілтемелерін жарнамалауға болмайды.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">6</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Администрация атын жамылмау</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Әкімшілік өкілдерінің атын жамылып басқаларды алдауға тыйым салынады.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">7</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">Экономиканы сақтау</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Ойын ішіндегі экономиканы бұзатын әрекеттерге жол берілмейді.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex items-start gap-4">
+                    <span class="w-8 h-8 rounded-xl bg-kzSky/10 text-kzSky font-black flex items-center justify-center flex-shrink-0 border border-kzSky/30">8</span>
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-1">SMP Атмосферасы</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">Барлық ойыншыларға құрметпен қарап, жайлы атмосфераны бірге сақтайық.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-white/10 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-3">
+                <i class="fa-solid fa-cube text-kzSky"></i>
+                <span class="font-extrabold gold-gradient-text tracking-wider uppercase text-sm">QAZAQSTAN MINECRAFT</span>
+            </div>
+            <p class="text-xs sm:text-sm text-gray-400 font-medium">
+                2026 • Qazaqstan Барлық құқықтар қорғалған
+            </p>
+        </div>
+    </footer>
+
+    <!-- Interactive Purchase Modal -->
+    <div id="purchaseModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 sm:p-8 border border-kzGold/40 shadow-2xl relative transform scale-95 transition-all duration-300" id="modalCard">
+            <!-- Close Button -->
+            <button onclick="closePurchaseModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-gray-400 hover:text-white flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-kzGold/10 border border-kzGold/30 text-kzGold mx-auto flex items-center justify-center text-2xl mb-3">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white">Сатып алуды растау</h3>
+                <p class="text-xs text-gray-400 mt-1">Тауар: <span id="modalItemName" class="font-bold text-kzGold"></span> (<span id="modalItemPrice" class="text-kzSky font-bold"></span>)</p>
+            </div>
+
+            <!-- Nickname Input Form -->
+            <form onsubmit="submitPurchase(event)">
+                <div class="mb-6">
+                    <label for="mcNickname" class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-2">
+                        Minecraft Никіңізді жазыңыз:
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-user-ninja"></i>
+                        </div>
+                        <input type="text" id="mcNickname" required placeholder="Мысалы: Steeeve_KZ" class="w-full pl-11 pr-4 py-3.5 bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-kzGold focus:ring-1 focus:ring-kzGold text-sm transition-all">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-kzGold to-amber-500 hover:from-amber-400 hover:to-kzGold text-slate-950 font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95">
+                    <i class="fa-brands fa-telegram text-lg"></i> Telegram арқылы сатып алу
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden flex items-center gap-3 px-5 py-3 rounded-2xl bg-slate-900 border border-kzSky/40 text-white shadow-2xl transition-all duration-300 transform translate-y-10">
+        <i class="fa-solid fa-circle-check text-kzSky text-lg"></i>
+        <span id="toastMsg" class="text-xs font-bold">Көшірілді!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let selectedItem = '';
+        let selectedPrice = '';
+
+        // Toggle Sidebar Menu
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebar.classList.contains('translate-x-full')) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // Copy IP to Clipboard with Toast Notification
+        function copyToClipboard(text, message) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = message;
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.remove('translate-y-10'), 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 2500);
+        }
+
+        // Open Modal
+        function openPurchaseModal(name, price) {
+            selectedItem = name;
+            selectedPrice = price;
+
+            document.getElementById('modalItemName').textContent = name;
+            document.getElementById('modalItemPrice').textContent = price;
+            document.getElementById('mcNickname').value = '';
+
+            const modal = document.getElementById('purchaseModal');
+            const card = document.getElementById('modalCard');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Close Modal
+        function closePurchaseModal() {
+            const modal = document.getElementById('purchaseModal');
+            const card = document.getElementById('modalCard');
+
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Submit Form and Redirect to Telegram @Itz_Zix with exact requested text format
+        function submitPurchase(event) {
+            event.preventDefault();
+            const nickname = document.getElementById('mcNickname').value.trim();
+            if (!nickname) return;
+
+            const textMsg = `Сәлем👋 мен ${selectedItem} сатып алғым келеді ${selectedPrice} ник: ${nickname}`;
+            const encodedMsg = encodeURIComponent(textMsg);
+            const tgUrl = `https://t.me/Itz_Zix?text=${encodedMsg}`;
+
+            closePurchaseModal();
+            window.open(tgUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
